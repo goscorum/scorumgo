@@ -6,8 +6,8 @@ import (
 	"errors"
 
 	// RPC
-	"github.com/go-steem/rpc/interfaces"
-	"github.com/go-steem/rpc/internal/call"
+	"github.com/shaunmza/steemgo/interfaces"
+	"github.com/shaunmza/steemgo/internal/call"
 )
 
 const (

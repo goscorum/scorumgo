@@ -7,8 +7,8 @@ import (
 	"time"
 
 	// RPC
-	"github.com/go-steem/rpc/encoding/wif"
-	"github.com/go-steem/rpc/types"
+	"github.com/shaunmza/steemgo/encoding/wif"
+	"github.com/shaunmza/steemgo/types"
 )
 
 var tx *types.Transaction

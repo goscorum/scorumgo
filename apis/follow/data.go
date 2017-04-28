@@ -30,3 +30,9 @@ type AccountReputation struct {
 	Reputation ??? `json:"reputation"`
 }
 */
+
+type FollowCount struct {
+	Account        string `json:"account"`
+	FollowerCount  uint32 `json:"follower_count"`
+	FollowingCount uint32 `json:"following_count"`
+}

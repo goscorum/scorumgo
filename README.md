@@ -1,6 +1,6 @@
-# go-steem/rpc
+# shaunmza/steemgo
 
-[![GoDoc](https://godoc.org/github.com/go-steem/rpc?status.svg)](https://godoc.org/github.com/go-steem/rpc)
+[![GoDoc](https://godoc.org/github.com/shaunmza/steemgo?status.svg)](https://godoc.org/github.com/shaunmza/steemgo)
 
 Golang RPC client library for [Steem](https://steem.io).
 
@@ -11,7 +11,7 @@ Golang RPC client library for [Steem](https://steem.io).
 ## Usage
 
 ```go
-import "github.com/go-steem/rpc"
+import "github.com/shaunmza/steemgo"
 ```
 
 This package is still very much in development, so `gopkg.in` is not yet available.
@@ -20,7 +20,7 @@ This package is still very much in development, so `gopkg.in` is not yet availab
 
 This package calls [bitcoin-core/secp256k1](https://github.com/bitcoin-core/secp256k1)
 using CGO to implement signed transactions, so you need to install `secp256k1` first.
-Then it will be possible to build `go-steem/rpc`.
+Then it will be possible to build `shaunmza/steemgo`.
 
 In case you don't need signed transactions, i.e. you don't need to use
 `network_broadcast_api`, it is possible to build the package with `nosigning`

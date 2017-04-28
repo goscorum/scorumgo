@@ -7,7 +7,7 @@ import (
 	"testing"
 
 	// RPC
-	"github.com/go-steem/rpc/encoding/transaction"
+	"github.com/shaunmza/steemgo/encoding/transaction"
 )
 
 func TestVoteOperation_MarshalTransaction(t *testing.T) {

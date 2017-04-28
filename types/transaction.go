@@ -2,7 +2,7 @@ package types
 
 import (
 	// RPC
-	"github.com/go-steem/rpc/encoding/transaction"
+	"github.com/shaunmza/steemgo/encoding/transaction"
 
 	// Vendor
 	"github.com/pkg/errors"

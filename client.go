@@ -1,12 +1,12 @@
-package rpc
+package steemgo
 
 import (
 	// RPC
-	"github.com/go-steem/rpc/apis/database"
-	"github.com/go-steem/rpc/apis/follow"
-	"github.com/go-steem/rpc/apis/login"
-	"github.com/go-steem/rpc/apis/networkbroadcast"
-	"github.com/go-steem/rpc/interfaces"
+	"github.com/shaunmza/steemgo/apis/database"
+	"github.com/shaunmza/steemgo/apis/follow"
+	"github.com/shaunmza/steemgo/apis/login"
+	"github.com/shaunmza/steemgo/apis/networkbroadcast"
+	"github.com/shaunmza/steemgo/interfaces"
 )
 
 // Client can be used to access Steem remote APIs.

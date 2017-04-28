@@ -8,7 +8,7 @@ import (
 	"time"
 
 	// RPC
-	"github.com/go-steem/rpc/interfaces"
+	"github.com/shaunmza/steemgo/interfaces"
 
 	// Vendor
 	"github.com/pkg/errors"
@@ -170,7 +170,6 @@ func (t *Transport) dial(cancel <-chan struct{}) (*websocket.Conn, error) {
 	var conn net.Conn
 	dialer := &net.Dialer{
 		Timeout: t.dialTimeout,
-		Cancel:  cancel,
 	}
 	switch t.url.Scheme {
 	case "ws":
