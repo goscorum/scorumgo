@@ -143,3 +143,79 @@ type VoteState struct {
 	Percent *types.Int  `json:"percent"`
 	Time    *types.Time `json:"time"`
 }
+
+type Account struct {
+	Id   uint32 `json:"id"`
+	Name string `json:"name"`
+	//Owner ??? 	`json:"owner"`
+	//`json:"active":{},
+	//`json:"posting":{},
+	MemoKey string `json:"memo_key"`
+	//json_metadata ??? `json:"json_metadata":"{\"profile\":{\"name\":\"Shaun\",\"about\":\"Developer, tinkerer, short attention span\",\"location\":\"Portugal\",\"profile_image\":\"http://i.imgur.com/wftoPVi.jpg\"}}",
+	Proxy               string      `json:"proxy"`
+	LastOwnerUpdate     *types.Time `json:"last_owner_update"`
+	LastAccountUpdate   *types.Time `json:"last_account_update"`
+	Created             *types.Time `json:"created"`
+	Mined               bool        `json:"mined"`
+	OwnerChallenged     bool        `json:"owner_challenged"`
+	ActiveChallenged    bool        `json:"active_challenged"`
+	LastOwnerProved     *types.Time `json:"last_owner_proved"`
+	LastActiveProved    *types.Time `json:"last_active_proved"`
+	RecoveryAccount     string      `json:"recovery_account"`
+	LastAccountRecovery *types.Time `json:"last_account_recovery"`
+	ResetAccount        string      `json:"reset_account"`
+	CommentCount        uint32      `json:"comment_count"`
+	LifetimeVoteCount   uint32      `json:"lifetime_vote_count"`
+	PostCount           uint32      `json:"post_count"`
+	CanVote             bool        `json:"can_vote"`
+	VotingPower         uint32      `json:"voting_power"`
+	LastVoteTime        *types.Time `json:"last_vote_time"`
+	Balance             string      `json:"balance"`
+	SavingsBalance      string      `json:"savings_balance"`
+	SbdBalance          string      `json:"sbd_balance"`
+	//`json:"sbd_seconds":"227233098",
+	SbdSecondsLastUpdate          *types.Time `json:"sbd_seconds_last_update"`
+	SbdLastInterestPayment        *types.Time `json:"sbd_last_interest_payment"`
+	SavingsSbdBalance             string      `json:"savings_sbd_balance"`
+	SavingsSbdSeconds             string      `json:"savings_sbd_seconds"`
+	SavingsSbdSecondsLastUpdate   *types.Time `json:"savings_sbd_seconds_last_update"`
+	SavingsSbdLastInterestPayment *types.Time `json:"savings_sbd_last_interest_payment"`
+	SavingsWithdrawRequests       uint32      `json:"savings_withdraw_requests"`
+	RewardSbdBalance              string      `json:"reward_sbd_balance"`
+	RewardSteemBalance            string      `json:"reward_steem_balance"`
+	RewardVestingBalance          string      `json:"reward_vesting_balance"`
+	RewardVestingSteem            string      `json:"reward_vesting_steem"`
+	VestingShares                 string      `json:"vesting_shares"`
+	DelegatedVestingShares        string      `json:"delegated_vesting_shares"`
+	ReceivedVestingShares         string      `json:"received_vesting_shares"`
+	VestingWithdrawRate           string      `json:"vesting_withdraw_rate"`
+	NextVestingWithdrawal         *types.Time `json:"next_vesting_withdrawal"`
+	Withdrawn                     uint32      `json:"withdrawn"`
+	ToWithdraw                    uint32      `json:"to_withdraw"`
+	WithdrawRoutes                uint32      `json:"withdraw_routes"`
+	CurationRewards               uint32      `json:"curation_rewards"`
+	PostingRewards                uint32      `json:"posting_rewards"`
+	//proxied_vsf_votes `json:"proxied_vsf_votes":[],
+	WitnessesVotedFor         uint32      `json:"witnesses_voted_for"`
+	AverageBandwidth          uint32      `json:"average_bandwidth"`
+	LifetimeBandwidth         string      `json:"lifetime_bandwidth"`
+	LastBandwidthUpdate       *types.Time `json:"last_bandwidth_update"`
+	AverageMarketBandwidth    uint32      `json:"average_market_bandwidth"`
+	LastMarketBandwidthUpdate *types.Time `json:"last_market_bandwidth_update"`
+	LastPost                  *types.Time `json:"last_post"`
+	LastRootPost              *types.Time `json:"last_root_post"`
+	PostBandwidth             uint32      `json:"post_bandwidth"`
+	NewAverageBandwidth       uint32      `json:"new_average_bandwidth,uint32"`
+	NewAverageMarketBandwidth string      `json:"new_average_market_bandwidth"`
+	VestingBalance            string      `json:"vesting_balance"`
+	Reputation                string      `json:"reputation"`
+	//`json:"transfer_history":[],
+	//`json:"market_history":[],
+	//`json:"post_history":[],
+	//`json:"vote_history":[],
+	//`json:"other_history":[],
+	//`json:"witness_votes":[],
+	//`json:"tags_usage":[],
+	//`json:"guest_bloggers":[],
+	//`json:"blog_category":{}
+}

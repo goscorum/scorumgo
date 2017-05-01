@@ -3,11 +3,14 @@ package database
 import (
 	// Stdlib
 	"encoding/json"
-	"errors"
 
 	// RPC
+
 	"github.com/shaunmza/steemgo/interfaces"
 	"github.com/shaunmza/steemgo/internal/call"
+
+	// Vendor
+	"github.com/pkg/errors"
 )
 
 const (
@@ -235,6 +238,20 @@ func (api *API) GetNextScheduledHardforkRaw() (*json.RawMessage, error) {
 
 func (api *API) GetAccountsRaw(accountNames []string) (*json.RawMessage, error) {
 	return call.Raw(api.caller, "get_accounts", [][]string{accountNames})
+}
+
+func (api *API) GetAccounts(accountNames []string) ([]*Account, error) {
+	raw, err := api.GetAccountsRaw(accountNames)
+	if err != nil {
+		return nil, err
+	}
+
+	var resp []*Account
+	if err := json.Unmarshal([]byte(*raw), &resp); err != nil {
+		return nil, errors.Wrap(
+			err, "shaunmza/steemgo: follow_api: failed to unmarshal get_follow_count response")
+	}
+	return resp, nil
 }
 
 // XXX: Not sure about params.
