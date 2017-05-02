@@ -145,6 +145,37 @@ type VoteState struct {
 }
 
 type Account struct {
+	Id                  uint32
+	Name                string
+	Profile             *Profile
+	MemoKey             string      `json:"memo_key"`
+	Proxy               string      `json:"proxy"`
+	LastOwnerUpdate     *types.Time `json:"last_owner_update"`
+	LastAccountUpdate   *types.Time `json:"last_account_update"`
+	Created             *types.Time `json:"created"`
+	Mined               bool        `json:"mined"`
+	OwnerChallenged     bool        `json:"owner_challenged"`
+	ActiveChallenged    bool        `json:"active_challenged"`
+	LastOwnerProved     *types.Time `json:"last_owner_proved"`
+	LastActiveProved    *types.Time `json:"last_active_proved"`
+	RecoveryAccount     string      `json:"recovery_account"`
+	LastAccountRecovery *types.Time `json:"last_account_recovery"`
+	ResetAccount        string      `json:"reset_account"`
+	CommentCount        uint32      `json:"comment_count,uint32"`
+	LifetimeVoteCount   uint32      `json:"lifetime_vote_count,uint32"`
+	PostCount           uint32      `json:"post_count,uint32"`
+	CanVote             bool        `json:"can_vote"`
+	VotingPower         uint32      `json:"voting_power,uint32"`
+	LastVoteTime        *types.Time `json:"last_vote_time"`
+	Balance             string      `json:"balance"`
+	SavingsBalance      string      `json:"savings_balance"`
+	SbdBalance          string      `json:"sbd_balance"`
+	LastPost            *types.Time `json:"last_post"`
+	LastRootPost        *types.Time `json:"last_root_post"`
+	Reputation          string      `json:"reputation"`
+}
+
+type AccountRaw struct {
 	Id   uint32 `json:"id"`
 	Name string `json:"name"`
 	//Owner ??? 	`json:"owner"`
@@ -218,6 +249,54 @@ type Account struct {
 	//`json:"tags_usage":[],
 	//`json:"guest_bloggers":[],
 	//`json:"blog_category":{}
+}
+
+func (account *Account) UnmarshalJSON(data []byte) error {
+
+	var raw AccountRaw
+	if err := json.NewDecoder(strings.NewReader(string(data))).Decode(&raw); err != nil {
+		return err
+	}
+
+	var j *JsonMetadata
+	if err := json.NewDecoder(strings.NewReader(string(raw.JsonMetadata))).Decode(&j); err != nil {
+		return err
+	}
+
+	account.Profile = j.Profile
+	account.Id = raw.Id
+	account.Name = raw.Name
+	account.MemoKey = raw.MemoKey
+	account.Proxy = raw.Proxy
+	account.LastOwnerUpdate = raw.LastOwnerUpdate
+	account.LastAccountUpdate = raw.LastAccountUpdate
+	account.Created = raw.Created
+	account.Mined = raw.Mined
+	account.OwnerChallenged = raw.OwnerChallenged
+	account.ActiveChallenged = raw.ActiveChallenged
+	account.LastOwnerProved = raw.LastOwnerProved
+	account.LastActiveProved = raw.LastActiveProved
+	account.RecoveryAccount = raw.RecoveryAccount
+	account.LastAccountRecovery = raw.LastAccountRecovery
+	account.ResetAccount = raw.ResetAccount
+	account.CommentCount = raw.CommentCount
+	account.LifetimeVoteCount = raw.LifetimeVoteCount
+	account.PostCount = raw.PostCount
+	account.CanVote = raw.CanVote
+	account.VotingPower = raw.VotingPower
+	account.LastVoteTime = raw.LastVoteTime
+	account.Balance = raw.Balance
+	account.SavingsBalance = raw.SavingsBalance
+	account.SbdBalance = raw.SbdBalance
+	account.LastPost = raw.LastPost
+	account.LastRootPost = raw.LastRootPost
+	account.Reputation = raw.Reputation
+
+	return nil
+}
+
+type JsonMetadata struct {
+	Profile *Profile `json:"profile"`
 }
 
 type Profile struct {
