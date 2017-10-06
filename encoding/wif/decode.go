@@ -2,7 +2,7 @@ package wif
 
 import (
 	// Vendor
-	"github.com/btcsuite/btcutil"
+	"github.com/asuleymanov/btc/btcutil"
 	"github.com/pkg/errors"
 )
 

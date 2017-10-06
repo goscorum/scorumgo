@@ -5,12 +5,13 @@ import (
 	"flag"
 	"fmt"
 	"log"
+	"net/rpc"
 	"os"
 	"os/signal"
 	"syscall"
 
 	// RPC
-	"github.com/shaunmza/steemgo"
+
 	"github.com/shaunmza/steemgo/encoding/wif"
 	"github.com/shaunmza/steemgo/transactions"
 	"github.com/shaunmza/steemgo/transports/websocket"
@@ -42,10 +43,12 @@ func run() (err error) {
 	author, permlink, voter := args[0], args[1], args[2]
 
 	// Prompt for WIF.
-	wifKey, err := promptWIF(voter)
+	/*wifKey, err := promptWIF(voter)
 	if err != nil {
 		return err
-	}
+	}*/
+
+	wifKey := "5JLw5dgQAx6rhZEgNN5C2ds1V47RweGshynFSWFbaMohsYsBvE8"
 
 	// Start catching signals.
 	var interrupted bool

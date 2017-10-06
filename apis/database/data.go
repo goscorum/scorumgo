@@ -71,7 +71,7 @@ type Content struct {
 	Created                 *types.Time      `json:"created"`
 	Replies                 []*Content       `json:"replies"`
 	Permlink                string           `json:"permlink"`
-	JsonMetadata            *ContentMetadata `json:"json_metadata"`
+	JsonMetadata            *ContentMetadata `json:"json_metadata,string"`
 	Children                *types.Int       `json:"children"`
 	NetRshares              *types.Int       `json:"net_rshares"`
 	URL                     string           `json:"url"`
@@ -145,34 +145,34 @@ type VoteState struct {
 }
 
 type Account struct {
-	Id                  uint32
-	Name                string
-	Profile             *Profile
-	MemoKey             string      `json:"memo_key"`
-	Proxy               string      `json:"proxy"`
-	LastOwnerUpdate     *types.Time `json:"last_owner_update"`
-	LastAccountUpdate   *types.Time `json:"last_account_update"`
-	Created             *types.Time `json:"created"`
-	Mined               bool        `json:"mined"`
+	Id                uint32
+	Name              string
+	Profile           *Profile
+	MemoKey           string      `json:"memo_key"`
+	Proxy             string      `json:"proxy"`
+	LastOwnerUpdate   *types.Time `json:"last_owner_update"`
+	LastAccountUpdate *types.Time `json:"last_account_update"`
+	Created           *types.Time `json:"created"`
+	/*Mined               bool        `json:"mined"`
 	OwnerChallenged     bool        `json:"owner_challenged"`
 	ActiveChallenged    bool        `json:"active_challenged"`
 	LastOwnerProved     *types.Time `json:"last_owner_proved"`
 	LastActiveProved    *types.Time `json:"last_active_proved"`
 	RecoveryAccount     string      `json:"recovery_account"`
 	LastAccountRecovery *types.Time `json:"last_account_recovery"`
-	ResetAccount        string      `json:"reset_account"`
-	CommentCount        uint32      `json:"comment_count,uint32"`
-	LifetimeVoteCount   uint32      `json:"lifetime_vote_count,uint32"`
-	PostCount           uint32      `json:"post_count,uint32"`
-	CanVote             bool        `json:"can_vote"`
-	VotingPower         uint32      `json:"voting_power,uint32"`
-	LastVoteTime        *types.Time `json:"last_vote_time"`
-	Balance             string      `json:"balance"`
-	SavingsBalance      string      `json:"savings_balance"`
-	SbdBalance          string      `json:"sbd_balance"`
-	LastPost            *types.Time `json:"last_post"`
-	LastRootPost        *types.Time `json:"last_root_post"`
-	Reputation          string      `json:"reputation"`
+	ResetAccount        string      `json:"reset_account"`*/
+	CommentCount      uint32      `json:"comment_count,uint32"`
+	LifetimeVoteCount uint32      `json:"lifetime_vote_count,uint32"`
+	PostCount         uint32      `json:"post_count,uint32"`
+	CanVote           bool        `json:"can_vote"`
+	VotingPower       uint32      `json:"voting_power,uint32"`
+	LastVoteTime      *types.Time `json:"last_vote_time"`
+	Balance           string      `json:"balance"`
+	SavingsBalance    string      `json:"savings_balance"`
+	SbdBalance        string      `json:"sbd_balance"`
+	LastPost          *types.Time `json:"last_post"`
+	LastRootPost      *types.Time `json:"last_root_post"`
+	//Reputation          string      `json:"reputation"`*/
 }
 
 type AccountRaw struct {
@@ -239,7 +239,7 @@ type AccountRaw struct {
 	NewAverageBandwidth       uint32      `json:"new_average_bandwidth,uint32"`
 	NewAverageMarketBandwidth uint32      `json:"new_average_market_bandwidth,uint32"`
 	VestingBalance            string      `json:"vesting_balance"`*/
-	Reputation string `json:"reputation"`
+	//Reputation string `json:"reputation"`
 	//`json:"transfer_history":[],
 	//`json:"market_history":[],
 	//`json:"post_history":[],
@@ -258,20 +258,31 @@ func (account *Account) UnmarshalJSON(data []byte) error {
 		return err
 	}
 
-	var j *JsonMetadata
-	if err := json.NewDecoder(strings.NewReader(string(raw.JsonMetadata))).Decode(&j); err != nil {
-		return err
+	p := Profile{}
+	j := JsonMetadata{&p}
+
+	md := string(raw.JsonMetadata)
+
+	if len(md) >= 2 && md[0] == '"' && md[len(md)-1] == '"' {
+		// Remove single set of matching quotes
+		md = md[1 : len(md)-1]
+	}
+
+	if md != "" {
+		if err := json.NewDecoder(strings.NewReader(md)).Decode(&j); err != nil {
+			//return err
+		}
 	}
 
 	account.Profile = j.Profile
 	account.Id = raw.Id
 	account.Name = raw.Name
-	account.MemoKey = raw.MemoKey
+	/*account.MemoKey = raw.MemoKey
 	account.Proxy = raw.Proxy
-	account.LastOwnerUpdate = raw.LastOwnerUpdate
-	account.LastAccountUpdate = raw.LastAccountUpdate
+	/*account.LastOwnerUpdate = raw.LastOwnerUpdate
+	account.LastAccountUpdate = raw.LastAccountUpdate*/
 	account.Created = raw.Created
-	account.Mined = raw.Mined
+	/*account.Mined = raw.Mined
 	account.OwnerChallenged = raw.OwnerChallenged
 	account.ActiveChallenged = raw.ActiveChallenged
 	account.LastOwnerProved = raw.LastOwnerProved
@@ -280,18 +291,17 @@ func (account *Account) UnmarshalJSON(data []byte) error {
 	account.LastAccountRecovery = raw.LastAccountRecovery
 	account.ResetAccount = raw.ResetAccount
 	account.CommentCount = raw.CommentCount
-	account.LifetimeVoteCount = raw.LifetimeVoteCount
+	account.LifetimeVoteCount = raw.LifetimeVoteCount*/
 	account.PostCount = raw.PostCount
 	account.CanVote = raw.CanVote
 	account.VotingPower = raw.VotingPower
-	account.LastVoteTime = raw.LastVoteTime
+	/*account.LastVoteTime = raw.LastVoteTime
 	account.Balance = raw.Balance
 	account.SavingsBalance = raw.SavingsBalance
 	account.SbdBalance = raw.SbdBalance
 	account.LastPost = raw.LastPost
-	account.LastRootPost = raw.LastRootPost
-	account.Reputation = raw.Reputation
-
+	account.LastRootPost = raw.LastRootPost*/
+	//account.Reputation = raw.Reputation
 	return nil
 }
 

@@ -2,6 +2,7 @@ package types
 
 import (
 	// Stdlib
+	"bytes"
 	"encoding/json"
 	"reflect"
 
@@ -12,37 +13,62 @@ import (
 // dataObjects keeps mapping operation type -> operation data object.
 // This is used later on to unmarshal operation data based on the operation type.
 var dataObjects = map[OpType]Operation{
-	TypeVote:              &VoteOperation{},
-	TypeComment:           &CommentOperation{},
-	TypeTransfer:          &TransferOperation{},
-	TypeTransferToVesting: &TransferToVestingOperation{},
-	TypeWithdrawVesting:   &WithdrawVestingOperation{},
-	TypeLimitOrderCreate:  &LimitOrderCreateOperation{},
-	TypeLimitOrderCancel:  &LimitOrderCancelOperation{},
-	TypeFeedPublish:       &FeedPublishOperation{},
-	TypeConvert:           &ConvertOperation{},
-	TypeAccountCreate:     &AccountCreateOperation{},
-	TypeAccountUpdate:     &AccountUpdateOperation{},
-	// TypeWitnessUpdate:  &WitnessUpdateOperation{},
-	TypeAccountWitnessVote:  &AccountWitnessVoteOperation{},
-	TypeAccountWitnessProxy: &AccountWitnessProxyOperation{},
-	TypePOW:                 &POWOperation{},
-	// TypeCustom:           &CustomOperation{},
-	TypeReportOverProduction: &ReportOverProductionOperation{},
-	TypeDeleteComment:        &DeleteCommentOperation{},
-	TypeCustomJSON:           &CustomJSONOperation{},
-	TypeCommentOptions:       &CommentOptionsOperation{},
-	// TypeSetWithdrawVestingRoute: &SetWithdrawVestingRouteOperation{},
-	// TypeLimitOrderCreate2:       &LimitOrderCreate2Operation{},
-	// TypeChallengeAuthority:      &ChallengeAuthorityOperation{},
-	// TypeProveAuthority:          &ProveAuthorityOperation{},
-	// TypeRequestAccountRecovery:  &RequestAccountRecoveryOperation{},
-	// TypeRecoverAccount:          &RecoverAccountOperation{},
-	// TypeChangeRecoveryAccount:   &ChangeRecoverAccountOperation{},
-	// TypeEscrowTransfer:          &EscrowTransferOperation{},
-	// TypeEscrowDispute:           &EscrowDisputeOperation{},
-	// TypeEscrowRelease:           &EescrowReleaseOperation{},
-	// TypePOW2:                    &POW2Operation{},
+	TypeVote:                      &VoteOperation{},
+	TypeComment:                   &CommentOperation{},
+	TypeTransfer:                  &TransferOperation{},
+	TypeTransferToVesting:         &TransferToVestingOperation{},
+	TypeWithdrawVesting:           &WithdrawVestingOperation{},
+	TypeLimitOrderCreate:          &LimitOrderCreateOperation{},
+	TypeLimitOrderCancel:          &LimitOrderCancelOperation{},
+	TypeFeedPublish:               &FeedPublishOperation{},
+	TypeConvert:                   &ConvertOperation{},
+	TypeAccountCreate:             &AccountCreateOperation{},
+	TypeAccountUpdate:             &AccountUpdateOperation{},
+	TypeWitnessUpdate:             &WitnessUpdateOperation{},
+	TypeAccountWitnessVote:        &AccountWitnessVoteOperation{},
+	TypeAccountWitnessProxy:       &AccountWitnessProxyOperation{},
+	TypePOW:                       &POWOperation{},
+	TypeCustom:                    &CustomOperation{},
+	TypeReportOverProduction:      &ReportOverProductionOperation{},
+	TypeDeleteComment:             &DeleteCommentOperation{},
+	TypeCustomJSON:                &CustomJSONOperation{},
+	TypeCommentOptions:            &CommentOptionsOperation{},
+	TypeSetWithdrawVestingRoute:   &SetWithdrawVestingRouteOperation{},
+	TypeLimitOrderCreate2:         &LimitOrderCreate2Operation{},
+	TypeChallengeAuthority:        &ChallengeAuthorityOperation{},
+	TypeProveAuthority:            &ProveAuthorityOperation{},
+	TypeRequestAccountRecovery:    &RequestAccountRecoveryOperation{},
+	TypeRecoverAccount:            &RecoverAccountOperation{},
+	TypeChangeRecoveryAccount:     &ChangeRecoveryAccountOperation{},
+	TypeEscrowTransfer:            &EscrowTransferOperation{},
+	TypeEscrowDispute:             &EscrowDisputeOperation{},
+	TypeEscrowRelease:             &EscrowReleaseOperation{},
+	TypePOW2:                      &POW2Operation{},
+	TypeEscrowApprove:             &EscrowApproveOperation{},
+	TypeTransferToSavings:         &TransferToSavingsOperation{},
+	TypeTransferFromSavings:       &TransferFromSavingsOperation{},
+	TypeCancelTransferFromSavings: &CancelTransferFromSavingsOperation{},
+	TypeCustomBinary:              &CustomBinaryOperation{},
+	TypeDeclineVotingRights:       &DeclineVotingRightsOperation{},
+	TypeResetAccount:              &ResetAccountOperation{},
+	TypeSetResetAccount:           &SetResetAccountOperation{},
+	TypeClaimRewardBalance:        &ClaimRewardBalanceOperation{},
+	TypeDelegateVestingShares:     &DelegateVestingSharesOperation{},
+	//TypeAccountCreateWithDelegation: &AccountCreateWithDelegationOperation{},
+	TypeFillConvertRequest:      &FillConvertRequestOperation{},
+	TypeAuthorReward:            &AuthorRewardOperation{},
+	TypeCurationReward:          &CurationRewardOperation{},
+	TypeCommentReward:           &CommentRewardOperation{},
+	TypeLiquidityReward:         &LiquidityRewardOperation{},
+	TypeInterest:                &InterestOperation{},
+	TypeFillVestingWithdraw:     &FillVestingWithdrawOperation{},
+	TypeFillOrder:               &FillOrderOperation{},
+	TypeShutdownWitness:         &ShutdownWitnessOperation{},
+	TypeFillTransferFromSavings: &FillTransferFromSavingsOperation{},
+	TypeHardfork:                &HardforkOperation{},
+	TypeCommentPayoutUpdate:     &CommentPayoutUpdateOperation{},
+	TypeReturnVestingDelegation: &ReturnVestingDelegationOperation{},
+	TypeCommentBenefactorReward: &CommentBenefactorRewardOperation{},
 }
 
 // Operation represents an operation stored in a transaction.
@@ -76,6 +102,17 @@ func (ops *Operations) UnmarshalJSON(data []byte) error {
 	return nil
 }
 
+/*func (ops Operations) MarshalJSON() ([]byte, error) {
+    tuples := make([]*operationTuple, 0, len(ops))
+    for _, op := range ops {
+        tuples = append(tuples, &operationTuple{
+            Type: op.Type(),
+            Data: op.Data().(Operation),
+        })
+    }
+    return json.Marshal(tuples)
+}*/
+
 func (ops Operations) MarshalJSON() ([]byte, error) {
 	tuples := make([]*operationTuple, 0, len(ops))
 	for _, op := range ops {
@@ -84,7 +121,7 @@ func (ops Operations) MarshalJSON() ([]byte, error) {
 			Data: op.Data().(Operation),
 		})
 	}
-	return json.Marshal(tuples)
+	return JSONMarshal(tuples)
 }
 
 type operationTuple struct {
@@ -92,11 +129,26 @@ type operationTuple struct {
 	Data Operation
 }
 
+/*func (op *operationTuple) MarshalJSON() ([]byte, error) {
+    return json.Marshal([]interface{}{
+        op.Type,
+        op.Data,
+    })
+}*/
+
 func (op *operationTuple) MarshalJSON() ([]byte, error) {
-	return json.Marshal([]interface{}{
+	return JSONMarshal([]interface{}{
 		op.Type,
 		op.Data,
 	})
+}
+
+func JSONMarshal(t interface{}) ([]byte, error) {
+	buffer := &bytes.Buffer{}
+	encoder := json.NewEncoder(buffer)
+	encoder.SetEscapeHTML(false)
+	err := encoder.Encode(t)
+	return buffer.Bytes(), err
 }
 
 func (op *operationTuple) UnmarshalJSON(data []byte) error {

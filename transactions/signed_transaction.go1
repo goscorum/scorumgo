@@ -1,0 +1,219 @@
+// +build !nosigning
+
+package transactions
+
+import (
+	// Stdlib
+	"bytes"
+	"crypto/sha256"
+	"encoding/hex"
+	"fmt"
+	"time"
+
+	// RPC
+	secp256k1 "github.com/haltingstate/secp256k1-go"
+	secp "github.com/haltingstate/secp256k1-go/secp256k1-go2"
+	"github.com/shaunmza/steemgo/encoding/transaction"
+	"github.com/shaunmza/steemgo/types"
+
+	// Vendor
+	"github.com/pkg/errors"
+)
+
+type SignedTransaction struct {
+	*types.Transaction
+}
+
+func NewSignedTransaction(tx *types.Transaction) *SignedTransaction {
+	if tx.Expiration == nil {
+		expiration := time.Now().Add(30 * time.Second)
+		tx.Expiration = &types.Time{&expiration}
+	}
+
+	return &SignedTransaction{tx}
+}
+
+func (tx *SignedTransaction) Serialize() ([]byte, error) {
+	var b bytes.Buffer
+	encoder := transaction.NewEncoder(&b)
+
+	if err := encoder.Encode(tx.Transaction); err != nil {
+		return nil, err
+	}
+
+	fmt.Printf("%s\n", b.Bytes())
+	return b.Bytes(), nil
+}
+
+func (tx *SignedTransaction) Digest(chain *Chain) ([]byte, error) {
+	var msgBuffer bytes.Buffer
+
+	// Write the chain ID.
+	rawChainID, err := hex.DecodeString(chain.ID)
+	if err != nil {
+		return nil, errors.Wrapf(err, "failed to decode chain ID: %v", chain.ID)
+	}
+
+	if _, err := msgBuffer.Write(rawChainID); err != nil {
+		return nil, errors.Wrap(err, "failed to write chain ID")
+	}
+
+	// Write the serialized transaction.
+	rawTx, err := tx.Serialize()
+	if err != nil {
+		return nil, err
+	}
+
+	if _, err := msgBuffer.Write(rawTx); err != nil {
+		return nil, errors.Wrap(err, "failed to write serialized transaction")
+	}
+	fmt.Printf("%s\n", rawTx)
+	// Compute the digest.
+	digest := sha256.Sum256(msgBuffer.Bytes())
+	fmt.Printf("%s\n", digest)
+	return digest[:], nil
+}
+
+func (tx *SignedTransaction) Sign(privKeys [][]byte, chain *Chain) error {
+	digest, err := tx.Digest(chain)
+	if err != nil {
+		return err
+	}
+
+	// Sign.
+
+	cKeys := make([][]byte, 0, len(privKeys))
+	for _, key := range privKeys {
+		cKeys = append(cKeys, key)
+	}
+
+	sigs := make([][]byte, 0, len(privKeys))
+	for _, cKey := range cKeys {
+		var (
+			signature []byte
+			recid     int
+		)
+
+		signature = signTransaction(digest, cKey, &recid)
+
+		code := secp.(
+			(*C.uchar)(cDigest), (*C.uchar)(cKey), (*C.uchar)(&signature[0]), &recid)
+		if code == 0 {
+			return errors.New("sign_transaction returned 0")
+		}
+
+		if signature == nil {
+			return errors.New("sign_transaction returned 0")
+		}
+
+		recid = 0
+
+		sig := make([]byte, 65)
+		sig[0] = byte(recid)
+		copy(sig[1:], signature[:])
+
+		sigs = append(sigs, sig)
+	}
+
+	// Set the signature array in the transaction.
+	sigsHex := make([]string, 0, len(sigs))
+	for _, sig := range sigs {
+		sigsHex = append(sigsHex, hex.EncodeToString(sig))
+	}
+
+	tx.Transaction.Signatures = sigsHex
+	return nil
+}
+
+func (tx *SignedTransaction) Verify(pubKeys [][]byte, chain *Chain) (bool, error) {
+	// Compute the digest, again.
+	digest, err := tx.Digest(chain)
+	if err != nil {
+		return false, err
+	}
+
+	// Make sure to free memory.
+	cSigs := make([][]byte, 0, len(tx.Signatures))
+
+	// Collect verified public keys.
+	pubKeysFound := make([][]byte, len(pubKeys))
+	for i, signature := range tx.Signatures {
+		sig, err := hex.DecodeString(signature)
+		if err != nil {
+			return false, errors.Wrap(err, "failed to decode signature hex")
+		}
+
+		//recoverParameter := sig[0] - 27 - 4
+		sig = sig[1:]
+
+		cSigs = append(cSigs, sig)
+
+		var publicKey []byte
+
+		code := secp256k1.VerifySignature(
+			digest,
+			sig,
+			publicKey,
+		)
+		if code == 1 {
+			pubKeysFound[i] = publicKey[:]
+		}
+	}
+
+	for i := range pubKeys {
+		if !bytes.Equal(pubKeysFound[i], pubKeys[i]) {
+			return false, nil
+		}
+	}
+	return true, nil
+}
+
+func signTransaction(digest []byte,
+	privkey []byte,
+	recid *int) (signature []byte) {
+
+	var ndata []byte
+	ndata = append(ndata, 1)
+	ndata[0] = 1
+
+	for {
+
+		// Sign the transaction.
+		signature = secp256k1.SignDeterministic(digest, privkey, ndata)
+		if signature == nil {
+			return nil
+		}
+
+		// Check whether the signiture is canonical.
+		if isCanonical(signature) {
+			*recid += 4  // compressed
+			*recid += 27 // compact
+			break
+		}
+
+		ndata[0]++
+	}
+
+	var a = secp256k1.Signature{}
+
+	return signature
+
+}
+
+func isCanonical(sig []byte) bool {
+	a := (int(sig[0]) & 0x80) == 0
+	b := (int(sig[1]) & 0x80) == 0
+	c := (int(sig[32]) & 0x80) == 0
+	d := (int(sig[33]) & 0x80) == 0
+
+	return (a &&
+		!(sig[0] == 0 && b) &&
+		c &&
+		!(sig[32] == 0 && d))
+	/*
+		return (!(sig[0] & 0x80) &&
+		        !(sig[0] == 0 && !(sig[1] & 0x80)) &&
+		        !(sig[32] & 0x80) &&
+		        !(sig[32] == 0 && !(sig[33] & 0x80)));
+	*/
+}

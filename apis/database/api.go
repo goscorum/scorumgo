@@ -247,9 +247,10 @@ func (api *API) GetAccounts(accountNames []string) ([]*Account, error) {
 	}
 
 	var resp []*Account
-	if err := json.Unmarshal([]byte(*raw), &resp); err != nil {
+
+	if err := json.Unmarshal(*raw, &resp); err != nil {
 		return nil, errors.Wrap(
-			err, "shaunmza/steemgo: follow_api: failed to unmarshal get_follow_count response")
+			err, "shaunmza/steemgo: database_api: failed to unmarshal get_accounts response")
 	}
 	return resp, nil
 }

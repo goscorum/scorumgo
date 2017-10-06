@@ -22,7 +22,7 @@ func main() {
 
 func run() (err error) {
 	// Process flags.
-	flagAddress := flag.String("rpc_endpoint", "ws://localhost:8090", "steemd RPC endpoint address")
+	flagAddress := flag.String("rpc_endpoint", "wss://gtg.steem.house:8090", "steemd RPC endpoint address")
 	flagReconnect := flag.Bool("reconnect", false, "enable auto-reconnect mode")
 	flag.Parse()
 
@@ -67,7 +67,7 @@ func run() (err error) {
 	}
 
 	// Use the transport to get an RPC client.
-	client, err := rpc.NewClient(t)
+	client, err := steemgo.NewClient(t)
 	if err != nil {
 		return err
 	}
