@@ -2,6 +2,7 @@ package database
 
 import (
 	// Stdlib
+
 	"encoding/json"
 	"strconv"
 	"strings"
@@ -172,7 +173,7 @@ type Account struct {
 	SbdBalance        string      `json:"sbd_balance"`
 	LastPost          *types.Time `json:"last_post"`
 	LastRootPost      *types.Time `json:"last_root_post"`
-	//Reputation          string      `json:"reputation"`*/
+	Reputation        string      `json:"reputation"`
 }
 
 type AccountRaw struct {
@@ -239,7 +240,7 @@ type AccountRaw struct {
 	NewAverageBandwidth       uint32      `json:"new_average_bandwidth,uint32"`
 	NewAverageMarketBandwidth uint32      `json:"new_average_market_bandwidth,uint32"`
 	VestingBalance            string      `json:"vesting_balance"`*/
-	//Reputation string `json:"reputation"`
+	Reputation json.RawMessage `json:"reputation"`
 	//`json:"transfer_history":[],
 	//`json:"market_history":[],
 	//`json:"post_history":[],
@@ -274,6 +275,15 @@ func (account *Account) UnmarshalJSON(data []byte) error {
 		}
 	}
 
+	bt := []byte(raw.Reputation)
+	//n := bytes.Index(bt, []byte{0})
+
+	r := string(bt[:])
+	if len(r) >= 2 && r[0] == '"' && r[len(r)-1] == '"' {
+		// Remove single set of matching quotes
+		r = r[1 : len(r)-1]
+	}
+
 	account.Profile = j.Profile
 	account.Id = raw.Id
 	account.Name = raw.Name
@@ -295,13 +305,13 @@ func (account *Account) UnmarshalJSON(data []byte) error {
 	account.PostCount = raw.PostCount
 	account.CanVote = raw.CanVote
 	account.VotingPower = raw.VotingPower
-	/*account.LastVoteTime = raw.LastVoteTime
-	account.Balance = raw.Balance
+	account.LastVoteTime = raw.LastVoteTime
+	/*account.Balance = raw.Balance
 	account.SavingsBalance = raw.SavingsBalance
 	account.SbdBalance = raw.SbdBalance
 	account.LastPost = raw.LastPost
 	account.LastRootPost = raw.LastRootPost*/
-	//account.Reputation = raw.Reputation
+	account.Reputation = r
 	return nil
 }
 
