@@ -30,3 +30,13 @@ func (t *Time) UnmarshalJSON(data []byte) error {
 func (t *Time) MarshalTransaction(encoder *transaction.Encoder) error {
 	return encoder.Encode(uint32(t.Time.Unix()))
 }
+
+func (t *Time) Scan(v interface{}) error {
+	// Should be more strictly to check this type.
+	vt, err := time.Parse("2006-01-02 15:04:05", string(v.([]byte)))
+	if err != nil {
+		return err
+	}
+	t.Time = &vt
+	return nil
+}

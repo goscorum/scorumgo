@@ -22,7 +22,8 @@ const (
 
 var customJSONDataObjects = map[string]interface{}{
 	TypeFollow: &FollowOperation{},
-	TypeReblog: &ReblogOperation{},
+	TypeReblog: &FollowOperation{},
+	//TypeReblog: &ReblogOperation{},
 }
 
 // FC_REFLECT( steemit::chain::custom_json_operation,

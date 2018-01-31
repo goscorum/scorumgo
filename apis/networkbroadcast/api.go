@@ -57,8 +57,8 @@ func (api *API) BroadcastTransactionSynchronousRaw(tx *types.Transaction) (*json
 
 type BroadcastResponse struct {
 	ID       string `json:"id"`
-	BlockNum uint32 `json:"block_num"`
-	TrxNum   uint32 `json:"trx_num"`
+	BlockNum int32  `json:"block_num"`
+	TrxNum   int32  `json:"trx_num"`
 	Expired  bool   `json:"expired"`
 }
 

@@ -9,8 +9,8 @@ type FollowOperation struct {
 	Permlink  string   `json:"permlink"`
 }
 
-type ReblogOperation struct {
+/*type ReblogOperation struct {
 	Account  string `json:"account"`
 	Author   string `json:"author"`
 	Permlink string `json:"permlink"`
-}
+}*/
