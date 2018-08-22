@@ -3,6 +3,8 @@ package types
 import (
 	// Stdlib
 	"encoding/json"
+	"fmt"
+	"strings"
 
 	// RPC
 	"github.com/shaunmza/steemgo/encoding/transaction"
@@ -325,7 +327,19 @@ func (op *CommentOperation) Data() interface{} {
 }
 
 func (op *CommentOperation) IsStoryOperation() bool {
-	return op.ParentAuthor == ""
+	return (strings.ToLower(strings.TrimSpace(op.ParentAuthor)) == "" && strings.ToLower(strings.TrimSpace(op.Title)) != "")
+}
+
+func (op *CommentOperation) GetMetaData() (resp *CommentOperationJsonMetadata, err error) {
+	fmt.Printf("%#v", op.JsonMetadata)
+	if op.JsonMetadata == "" {
+		return &CommentOperationJsonMetadata{}, nil
+	}
+	if err := json.Unmarshal([]byte(op.JsonMetadata), &resp); err != nil {
+		return nil, errors.Wrap(
+			err, "failed to unmarshal comment JSON meta data")
+	}
+	return resp, nil
 }
 
 func (op *CommentOperation) MarshalTransaction(encoder *transaction.Encoder) error {
@@ -343,6 +357,13 @@ func (op *CommentOperation) MarshalTransaction(encoder *transaction.Encoder) err
 	enc.Encode(op.Body)
 	enc.Encode(op.JsonMetadata)
 	return enc.Err()
+}
+
+type CommentOperationJsonMetadata struct {
+	Tags   []string
+	Image  []string
+	App    string
+	Format string
 }
 
 // FC_REFLECT( steemit::chain::vote_operation,

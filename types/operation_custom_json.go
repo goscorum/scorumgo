@@ -67,6 +67,11 @@ func (op *CustomJSONOperation) UnmarshalData() (interface{}, error) {
 			return nil, errors.Wrapf(err,
 				"failed to unmarshal CustomJSONOperation.JSON: \n%v", op.JSON)
 		}
+
+		if len(rawTuple) < 2 {
+			return nil, errors.Errorf("invalid CustomJSONOperation.JSON: \n%v", op.JSON)
+		}
+
 		if rawTuple[1] == nil {
 			return nil, errors.Errorf("invalid CustomJSONOperation.JSON: \n%v", op.JSON)
 		}
