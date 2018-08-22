@@ -6,8 +6,8 @@ import (
 
 	// RPC
 
-	"github.com/shaunmza/steemgo/interfaces"
-	"github.com/shaunmza/steemgo/internal/call"
+	"github.com/goscorum/scorumgo/interfaces"
+	"github.com/goscorum/scorumgo/internal/call"
 
 	// Vendor
 	"github.com/pkg/errors"
@@ -250,7 +250,7 @@ func (api *API) GetAccounts(accountNames []string) ([]*Account, error) {
 
 	if err := json.Unmarshal(*raw, &resp); err != nil {
 		return nil, errors.Wrap(
-			err, "shaunmza/steemgo: database_api: failed to unmarshal get_accounts response")
+			err, "goscorum/scorumgo: database_api: failed to unmarshal get_accounts response")
 	}
 	return resp, nil
 }

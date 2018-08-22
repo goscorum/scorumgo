@@ -1,12 +1,12 @@
-package steemgo
+package scorumgo
 
 import (
 	// RPC
-	"github.com/shaunmza/steemgo/apis/database"
-	"github.com/shaunmza/steemgo/apis/follow"
-	"github.com/shaunmza/steemgo/apis/login"
-	"github.com/shaunmza/steemgo/apis/networkbroadcast"
-	"github.com/shaunmza/steemgo/interfaces"
+	"github.com/goscorum/scorumgo/apis/database"
+	"github.com/goscorum/scorumgo/apis/follow"
+	"github.com/goscorum/scorumgo/apis/login"
+	"github.com/goscorum/scorumgo/apis/networkbroadcast"
+	"github.com/goscorum/scorumgo/interfaces"
 )
 
 // Client can be used to access Steem remote APIs.

@@ -8,7 +8,7 @@ import (
 	"time"
 
 	// RPC
-	"github.com/shaunmza/steemgo/interfaces"
+	"github.com/goscorum/scorumgo/interfaces"
 
 	// Vendor
 	"github.com/pkg/errors"

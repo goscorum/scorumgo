@@ -8,7 +8,7 @@ import (
 	"time"
 
 	// RPC
-	"github.com/shaunmza/steemgo/encoding/transaction"
+	"github.com/goscorum/scorumgo/encoding/transaction"
 )
 
 func TestTransaction_MarshalTransaction(t *testing.T) {

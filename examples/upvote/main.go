@@ -12,10 +12,10 @@ import (
 
 	// RPC
 
-	"github.com/shaunmza/steemgo/encoding/wif"
-	"github.com/shaunmza/steemgo/transactions"
-	"github.com/shaunmza/steemgo/transports/websocket"
-	"github.com/shaunmza/steemgo/types"
+	"github.com/goscorum/scorumgo/encoding/wif"
+	"github.com/goscorum/scorumgo/transactions"
+	"github.com/goscorum/scorumgo/transports/websocket"
+	"github.com/goscorum/scorumgo/types"
 
 	// Vendor
 	"github.com/pkg/errors"

@@ -5,7 +5,7 @@ import (
 	"encoding/json"
 
 	// RPC
-	"github.com/shaunmza/steemgo/interfaces"
+	"github.com/goscorum/scorumgo/interfaces"
 
 	// Vendor
 	"github.com/pkg/errors"

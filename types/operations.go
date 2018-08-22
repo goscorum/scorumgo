@@ -7,7 +7,7 @@ import (
 	"strings"
 
 	// RPC
-	"github.com/shaunmza/steemgo/encoding/transaction"
+	"github.com/goscorum/scorumgo/encoding/transaction"
 
 	// Vendor
 	"github.com/pkg/errors"

@@ -8,7 +8,7 @@ import (
 	"strings"
 
 	// RPC
-	"github.com/shaunmza/steemgo/types"
+	"github.com/goscorum/scorumgo/types"
 )
 
 type Config struct {

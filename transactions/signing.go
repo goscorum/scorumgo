@@ -11,7 +11,7 @@ import (
 	"math/big"
 
 	secp256k1 "github.com/asuleymanov/btc/btcd/btcec"
-	"github.com/shaunmza/steemgo/rfc6979"
+	"github.com/goscorum/scorumgo/rfc6979"
 	"github.com/tendermint/go-crypto"
 )
 

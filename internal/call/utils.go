@@ -5,7 +5,7 @@ import (
 	"encoding/json"
 
 	// Vendor
-	"github.com/shaunmza/steemgo/interfaces"
+	"github.com/goscorum/scorumgo/interfaces"
 )
 
 var EmptyParams = []string{}
